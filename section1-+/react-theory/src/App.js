@@ -1,18 +1,27 @@
 import React, {Component} from 'react';
 import './App.css';
 import Car from "./Car/Car";
+import ErrorBoundary from "./ErrorBoundary/ErrorBoundary";
+import Counter from "./Counter/Counter";
 
 class App extends Component {
-    state = {
-        cars: [
-            {name: 'Ford', year: 2018},
-            {name: 'Audi', year: 2013},
-            {name: 'Mazda', year: 2000},
-            {name: 'BMW', year: 2004}
-        ],
-        pageTitle: 'React component',
-        showCars: false
-    };
+
+    constructor(props) {
+        super(props);
+        console.log('App construnctor')
+        this.state = {
+            cars: [
+                {name: 'Ford', year: 2018},
+                // {name: 'Audi', year: 2013},
+                // {name: 'Mazda', year: 2000},
+                // {name: 'BMW', year: 2004}
+            ],
+            pageTitle: 'React component',
+            showCars: false
+        };
+    }
+
+
 
     changeTitleHandler = (newTitle) => {
         this.setState(
@@ -49,7 +58,18 @@ class App extends Component {
         })
     };
 
+    componentWillMount() {
+        console.log('App componentWillMount')
+    }
+
+    componentDidMount() {
+        console.log('App componentDidMount')
+    }
+
     render() {
+
+        console.log('App render')
+
         const divStyle = {
             textAlign: 'center'
         };
@@ -58,24 +78,33 @@ class App extends Component {
         if (this.state.showCars) {
             cars = this.state.cars.map((car, index) => {
                 return (
-                    <Car
-                        key={index}
-                        name={car.name}
-                        year={car.year}
-                        onDelete={this.deleteHandler.bind(this, index)}
-                        onChangeName={(event) => this.onChangeName(event.target.value, index)}
-                    />
+                    <ErrorBoundary  key={index}>
+                        <Car
+                            name={car.name}
+                            year={car.year}
+                            onDelete={this.deleteHandler.bind(this, index)}
+                            onChangeName={(event) => this.onChangeName(event.target.value, index)}
+                        />
+                    </ErrorBoundary>
                 )
             })
         }
 
         return (
             <div className="App" style={divStyle}>
-                <h1>{this.state.pageTitle}</h1>
+                {/*<h1>{this.state.pageTitle}</h1>*/}
+                <h1>{this.props.title}</h1>
+
+                <Counter/>
+
+                <hr/>
 
                 {/*<input type="text" onChange={this.handleInput}/>*/}
 
-                <button onClick={this.changeTitleHandler.bind(this, 'new title')}>Change title</button>
+                <button
+                    style={{marginTop: 20}}
+                    onClick={this.changeTitleHandler.bind(this, 'new title')}>Change title
+                </button>
                 <button onClick={this.toggleCarsHandler}>Show/Hide cars</button>
 
                 <div style={{
